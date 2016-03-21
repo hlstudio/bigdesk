@@ -2,7 +2,7 @@
 
 Live charts and statistics for Elasticsearch 2.x cluster.
 
-## 03-21-2016
+## 2016-03-21
 - Support for Elasticsearch 2.x
 
 ## Installation Instructions
@@ -50,7 +50,7 @@ Example connecting to `http://127.0.0.1:9201` with 3 sec refresh interval:
 
 ## Screenshots
 
-![Bigdesk ES2.x](https://github.com/hlstudio/bigdesk/raw/master/bigdesk-es2.png)
+![Bigdesk ES2.x](https://github.com/hlstudio/bigdesk/raw/master/bigdesk_es2.png)
 
 
 ## Supported Web Browsers
@@ -60,4 +60,5 @@ Bigdesk should work in all modern web browsers as long as they support SVG. It h
 ## Credits
 
 Lukas Vlcek and [contributors](https://github.com/lukas-vlcek/bigdesk/contributors).
+
 Modified by hlstudio.
