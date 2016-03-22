@@ -541,8 +541,9 @@ var SelectedClusterNodeView = Backbone.View.extend({
                         if (stats_the_latest.node && stats_the_latest.node.indices) {
                             $("#indices_fielddata_cache_size").text(stats_the_latest.node.indices.fielddata.memory_size);
                             $("#indices_query_cache_size").text(stats_the_latest.node.indices.query_cache.memory_size);
-                            $("#indices_request_cache_size").text(stats_the_latest.node.indices.request_cache.memory_size);
+                            $("#indices_request_cache_size").text(stats_the_latest.node.indices.request_cache == undefined ? "n/a" : stats_the_latest.node.indices.request_cache.memory_size);
                         } else {
+	                        chart_indicesCacheSize = bigdesk_charts.not_available.chart(chart_indicesCacheSize.svg());
                             $("#indices_fielddata_cache_size").text("n/a");
                             $("#indices_query_cache_size").text("n/a");
                             $("#indices_request_cache_size").text("n/a");
@@ -553,9 +554,9 @@ var SelectedClusterNodeView = Backbone.View.extend({
                     // Indices: cache evictions
 
                     _.defer(function(){
-                        var indices_cache_fielddata_evictions = bigdesk_charts.indicesCacheEvictions.series1(stats);
+                        var indices_cache_fielddata_evictions= bigdesk_charts.indicesCacheEvictions.series1(stats);
                         var indices_cache_query_evictions = bigdesk_charts.indicesCacheEvictions.series2(stats);
-                        var indices_cache_request_evictions = bigdesk_charts.indicesCacheEvictions.series2(stats);
+                        var indices_cache_request_evictions = bigdesk_charts.indicesCacheEvictions.series3(stats);
 
                         if (indices_cache_fielddata_evictions.length > 1 && indices_cache_query_evictions.length > 1) {
 
@@ -567,7 +568,7 @@ var SelectedClusterNodeView = Backbone.View.extend({
 
                             $("#indices_cache_fielddata_evictions").text(stats_the_latest.node.indices.fielddata.evictions);
                             $("#indices_cache_query_evictions").text(stats_the_latest.node.indices.query_cache.evictions);
-                            $("#indices_cache_request_evictions").text(stats_the_latest.node.indices.request_cache.evictions);
+                            $("#indices_cache_request_evictions").text(stats_the_latest.node.indices.request_cache== undefined ? "n/a" : stats_the_latest.node.indices.request_cache.evictions);
 
                         }
                     });

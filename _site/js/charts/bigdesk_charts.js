@@ -717,7 +717,8 @@ bigdesk_charts.indicesCacheSize = {
 		return stats.map(function(snapshot){
 			return {
 				timestamp: +snapshot.id,
-				value: +snapshot.node.indices.request_cache.memory_size_in_bytes
+				//fix es1.x 
+				value: snapshot.node.indices.request_cache == undefined ? 0 :+snapshot.node.indices.request_cache.memory_size_in_bytes
 			}
 		})
 	}
@@ -731,7 +732,7 @@ bigdesk_charts.indicesCacheEvictions = {
                 caption: "Cache evictions (Δ)",
                 series1: "Fielddata",
                 series2: "Query",
-                series2: "Qequest",
+                series3: "Request",
                 margin_left: 5,
                 margin_bottom: 6,
                 width: 65
@@ -760,7 +761,7 @@ bigdesk_charts.indicesCacheEvictions = {
         return stats.map(function(snapshot){
             return {
                 timestamp: +snapshot.id,
-                value: +snapshot.node.indices.request_cache.evictions
+                value: snapshot.node.indices.request_cache == undefined ? 0 :+snapshot.node.indices.request_cache.evictions
             }
         })
     }
