@@ -2,6 +2,9 @@
 
 Live charts and statistics for Elasticsearch 2.x cluster.
 
+## 2016-03-23
+- Modify and relayout some metrics and charts
+
 ## 2016-03-21
 - Support for Elasticsearch 2.x
 
