@@ -132,40 +132,6 @@ bigdesk_charts.jvmHeapMem = {
     }
 };
 
-bigdesk_charts.jvmNonHeapMem = {
-
-    chart: function(element) {
-        return timeAreaChart()
-            .width(bigdesk_charts.default.width).height(bigdesk_charts.default.height)
-            .legend({
-                caption: "Non-Heap Mem",
-                series1: "Used",
-                series2: "Committed",
-                margin_left: 5,
-                margin_bottom: 6,
-                width: 85})
-            .svg(element);
-    },
-
-    series1: function(stats) {
-        return stats.map(function(snapshot){
-            return {
-                timestamp: +snapshot.node.jvm.timestamp,
-                value: +snapshot.node.jvm.mem.non_heap_used_in_bytes
-            }
-        })
-    },
-
-    series2: function(stats) {
-        return stats.map(function(snapshot){
-            return {
-                timestamp: +snapshot.node.jvm.timestamp,
-                value: +snapshot.node.jvm.mem.non_heap_committed_in_bytes
-            }
-        })
-    }
-};
-
 bigdesk_charts.jvmGC = {
 
     chart: function(element) {
@@ -429,6 +395,7 @@ bigdesk_charts.osPercent = {
                 caption: "Resouce Used (%)",
                 series1: "Cpu",
                 series2: "Mem",
+                series3: "100",
                 margin_left: 5,
                 margin_bottom: 6,
                 width: 55})
@@ -451,6 +418,48 @@ bigdesk_charts.osPercent = {
                 timestamp: +snapshot.node.os.timestamp,
                 value:
                     +snapshot.node.os.mem.used_percent
+            }
+        })
+    },
+    series3: function(stats) {
+        return stats.map(function(snapshot){
+            return {
+                timestamp: +snapshot.node.os.timestamp,
+                value: +100
+            }
+        })
+    }
+};
+
+bigdesk_charts.indicesSegments = {
+
+    chart: function(element) {
+        return timeSeriesChart()
+            .width(bigdesk_charts.default.width).height(bigdesk_charts.default.height)
+            .legend({
+                caption: "Indices Segments",
+                series1: "Segments count",
+                series2: "Shards count",
+                margin_left: 5,
+                margin_bottom: 6,
+                width: 60})
+            .svg(element);
+    },
+
+    series1: function(stats) {
+        return stats.map(function(snapshot){
+            return {
+                timestamp: +snapshot.id,
+                value: +snapshot.node.indices.segments.count
+            }
+        })
+    },
+
+    series2: function(stats) {
+        return stats.map(function(snapshot){
+            return {
+                timestamp: +snapshot.id,
+                value: +0
             }
         })
     }

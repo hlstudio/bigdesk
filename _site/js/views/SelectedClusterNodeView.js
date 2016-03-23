@@ -45,6 +45,10 @@ var SelectedClusterNodeView = Backbone.View.extend({
             items.shift();
         };
 
+		var toThousands= function(num) {
+    		return (num || 0).toString().replace(/(\d)(?=(?:\d{3})+$)/g, '$1,');
+		}
+
         var delta = function(items) {
             for (var i=(items.length - 1); i > 0 ; i--) {
                 items[i].value -= items[i-1].value;
@@ -71,7 +75,6 @@ var SelectedClusterNodeView = Backbone.View.extend({
                 // Create all charts
                 var chart_jvmThreads = bigdesk_charts.jvmThreads.chart(d3.select("#svg_jvmThreads"));
                 var chart_jvmHeapMem = bigdesk_charts.jvmHeapMem.chart(d3.select("#svg_jvmHeapMem"));
-                var chart_jvmNonHeapMem = bigdesk_charts.jvmNonHeapMem.chart(d3.select("#svg_jvmNonHeapMem"));
                 var chart_jvmGC = bigdesk_charts.jvmGC.chart(d3.select("#svg_jvmGC"));
 
 				var chart_threadpoolSearch = bigdesk_charts.threadpoolSearch.chart(d3.select("#svg_threadpoolSearch"));
@@ -81,7 +84,6 @@ var SelectedClusterNodeView = Backbone.View.extend({
 
                 var chart_channels = bigdesk_charts.channels.chart(d3.select("#svg_channels"));
                 var chart_transport_txrx = bigdesk_charts.transport_txrx.chart(d3.select("#svg_transport_txrx"));
-
 
                 var chart_indicesSearchReqs = bigdesk_charts.indicesSearchReqs.chart(d3.select("#svg_indicesSearchReqs"));
                 var chart_indicesSearchTime = bigdesk_charts.indicesSearchTime.chart(d3.select("#svg_indicesSearchTime"));
@@ -94,6 +96,8 @@ var SelectedClusterNodeView = Backbone.View.extend({
 
                 var chart_osMem = bigdesk_charts.osMem.chart(d3.select("#svg_osMem"));
                 var chart_osPercent = bigdesk_charts.osPercent.chart(d3.select("#svg_osPercent"));
+
+                var chart_indicesSegments = bigdesk_charts.indicesSegments.chart(d3.select("#svg_indicesSegments"));
                 
                var nodesStatsCollection = _view.model.get("nodesStats");
 
@@ -228,24 +232,6 @@ var SelectedClusterNodeView = Backbone.View.extend({
                         }
                     });
 
-                    // --------------------------------------------
-                    // JVM Non Heap Mem
-
-                    _.defer(function(){
-                        var jvm_non_heap_used_mem= bigdesk_charts.jvmNonHeapMem.series1(stats);
-                        var jvm_non_heap_committed_mem= bigdesk_charts.jvmNonHeapMem.series2(stats);
-
-                        try { chart_jvmNonHeapMem.animate(animatedCharts).update(jvm_non_heap_used_mem, jvm_non_heap_committed_mem); } catch (ignore) {}
-
-                        if (stats_the_latest && stats_the_latest.node) {
-                            $("#jvm_non_heap_mem_committed").text(stats_the_latest.node.jvm.mem.non_heap_committed);
-                            $("#jvm_non_heap_mem_used").text(stats_the_latest.node.jvm.mem.non_heap_used);
-                        } else {
-                            $("#jvm_non_heap_mem_committed").text("n/a");
-                            $("#jvm_non_heap_mem_used").text("n/a");
-                        }
-                    });
-
 					// --------------------------------------------
 					// Threadpool Search
 
@@ -373,8 +359,9 @@ var SelectedClusterNodeView = Backbone.View.extend({
 
                             var os_cpu_percent = bigdesk_charts.osPercent.series1(stats);
                             var os_mem_percent = bigdesk_charts.osPercent.series2(stats);
+                            var os_100_percent = bigdesk_charts.osPercent.series3(stats);
 
-                            try { chart_osPercent.animate(animatedCharts).update(os_cpu_percent, os_mem_percent); } catch (ignore) {}
+                            try { chart_osPercent.animate(animatedCharts).update(os_cpu_percent, os_mem_percent,os_100_percent); } catch (ignore) {}
 
                             $("#cpu_percent").text(stats_the_latest.node.process.cpu.percent+"%");
                             $("#mem_percent").text(stats_the_latest.node.os.mem.used_percent+"%");
@@ -390,22 +377,42 @@ var SelectedClusterNodeView = Backbone.View.extend({
 
                     _.defer(function(){
                         if (stats_the_latest && stats_the_latest.node) {
-                            $("#indices_docs_count").text(stats_the_latest.node.indices.docs.count);
-                            $("#indices_docs_deleted").text(stats_the_latest.node.indices.docs.deleted);
-                            $("#indices_store_size").text(stats_the_latest.node.indices.store.size);
-                            $("#indices_segments_count").text(stats_the_latest.node.indices.segments.count);
+	                        var indices_the_last=_view.model.get("indicesStatus");
+	                        indices_the_last=indices_the_last.at(indices_the_last.length-1).toJSON();
+	                        
+                            $("#indices_docs_count").text(toThousands(stats_the_latest.node.indices.docs.count) + " / " + toThousands(indices_the_last.indices.docs.count));
+                            $("#indices_docs_deleted").text(stats_the_latest.node.indices.docs.deleted + " / " + indices_the_last.indices.docs.deleted);
+                            $("#indices_store_size").text(stats_the_latest.node.indices.store.size + " / " + indices_the_last.indices.store.size);
                             $("#indices_flush_total").text(stats_the_latest.node.indices.flush.total + ", " + stats_the_latest.node.indices.flush.total_time);
                             $("#indices_refresh_total").text(stats_the_latest.node.indices.refresh.total + ", " + stats_the_latest.node.indices.refresh.total_time);
                         } else {
                             $("#indices_docs_count").text("n/a");
                             $("#indices_docs_deleted").text("n/a");
                             $("#indices_store_size").text("n/a");
-                            $("#indices_segments_count").text("n/a");
                             $("#indices_flush_total").text("n/a");
                             $("#indices_refresh_total").text("n/a");
                         }
                     });
 
+                    // --------------------------------------------
+                    // Indices: segments count
+
+                    _.defer(function(){
+                        var indices_segments_count = bigdesk_charts.indicesSegments.series1(stats);
+                        var shards_count = bigdesk_charts.indicesSearchReqs.series2(stats);
+                        if (indices_segments_count.length > 1 && shards_count.length > 1) {
+	                        var clusterState_the_last=_view.model.get("clusterState");
+	                        clusterState_the_last=clusterState_the_last.at(clusterState_the_last.length-1).toJSON();
+  		                    var asc=clusterState_the_last.routing_nodes.nodes[_view.nodeId()].length;
+  		                    //hack set value
+  		                    for(ii=0;ii<shards_count.length;ii++)
+  		                    	shards_count[ii].value=asc;
+                            try { chart_indicesSegments.animate(animatedCharts).update(indices_segments_count, shards_count); } catch (ignore) {}
+                            $("#indices_segments_count").text(stats_the_latest.node.indices.segments.count);
+                            $("#shards_count").text(asc);
+                        }
+                    });
+                    
                     // --------------------------------------------
                     // Indices: search requests
 
@@ -676,27 +683,18 @@ var SelectedClusterNodeView = Backbone.View.extend({
         // Node info
         var jsonModel = model.toJSON();
 
-        var selectedNodeInfo = Mustache.render(templates.selectedClusterNode.selectedNodeInfoTemplate, jsonModel);
+        // Summary title
 
-        var p1 = this.make("p", {}, selectedNodeInfo);
-        var col1 = this.make("div", {"class":"twelvecol last"});
-        var rowSelectedNode = this.make("div", {"class":"row nodeDetail"});
-
-        $(rowSelectedNode).append(col1);
-        $(col1).append(p1);
-
-        // JVM title
-
-        var jvmTitleP = this.make("p", {}, "<h2>JVM</h2>");
+        var jvmTitleP = this.make("p", {}, "<h2>Summary</h2>");
         var jvmTitleCol = this.make("div", {"class":"twelvecol last"});
         var rowJvmTitle = this.make("div", {"class":"row nodeDetail newSection"});
 
         $(rowJvmTitle).append(jvmTitleCol);
         $(jvmTitleCol).append(jvmTitleP);
 
-        // JVM detail row
+        // Summary detail row
 
-        var jvmInfo1 = Mustache.render(templates.selectedClusterNode.jvmInfoTemplate1, jsonModel.jvm);
+        var jvmInfo1 = Mustache.render(templates.selectedClusterNode.summaryInfoTemplate, jsonModel);
 
         var jvmp1 = this.make("p", {}, jvmInfo1);
 
@@ -707,33 +705,32 @@ var SelectedClusterNodeView = Backbone.View.extend({
         $(rowJvmInfo).append(jvmCol1);
         $(jvmCol1).append(jvmp1);
 
-        // JVM row for charts
-
+        // Summary row for charts
+        var osPercent = Mustache.render(templates.selectedClusterNode.osPercent, jsonModel);
         var jvmHeapMem = Mustache.render(templates.selectedClusterNode.jvmHeapMem, jsonModel);
-        var jvmNonHeapMem = Mustache.render(templates.selectedClusterNode.jvmNonHeapMem, jsonModel);
 
         var jvmpCharts1 = this.make("p", {},
             "<div style='overflow: auto;'>" +
                 "<svg width='100%' height='160'>" +
-                    "<svg id='svg_jvmHeapMem' clip_id='clip_jvmHeapMem' width='46.5%' height='100%' x='0' y='0' preserveAspectRatio='xMinYMid' viewBox='0 0 270 160'/>" +
-                    "<svg id='svg_jvmNonHeapMem' clip_id='clip_jvmNonHeapMem' width='46.5%' height='100%' x='54%' y='0' preserveAspectRatio='xMinYMid' viewBox='0 0 270 160'/>" +
+                    "<svg id='svg_osPercent' clip_id='clip_osPercent' width='46.5%' height='100%' x='0' y='0' preserveAspectRatio='xMinYMid' viewBox='0 0 270 160'/>" +
+                    "<svg id='svg_jvmHeapMem' clip_id='clip_jvmHeapMem' width='46.5%' height='100%' x='54%' y='0' preserveAspectRatio='xMinYMid' viewBox='0 0 270 160'/>" +
                 "</svg>" +
-                "<div width='46.5%' style='margin-left: 0%; float: left;'>" + jvmHeapMem + "</div>" +
-                "<div width='46.5%' style='margin-left: 54%;'>" + jvmNonHeapMem + "</div>" +
+                "<div width='46.5%' style='margin-left: 0%; float: left;'>" + osPercent + "</div>" +
+                "<div width='46.5%' style='margin-left: 54%;'>" + jvmHeapMem + "</div>" +
             "</div>"
         );
 
-        var jvmThreads = Mustache.render(templates.selectedClusterNode.jvmThreads, jsonModel);
         var jvmGC = Mustache.render(templates.selectedClusterNode.jvmGC, jsonModel);
+        var indicesSegments = Mustache.render(templates.selectedClusterNode.indicesSegments, jsonModel);
 
         var jvmpCharts2 = this.make("p", {},
             "<div style='overflow: auto;'>" +
                 "<svg width='100%' height='160'>" +
-                    "<svg id='svg_jvmThreads' clip_id='clip_jvmThreads' width='46.5%' height='100%' x='0' y='0' preserveAspectRatio='xMinYMid' viewBox='0 0 270 160'/>" +
-                    "<svg id='svg_jvmGC' clip_id='clip_jvmGC' width='46.5%' height='100%' x='54%' y='0' preserveAspectRatio='xMinYMid' viewBox='0 0 270 160'/>" +
+                    "<svg id='svg_jvmGC' clip_id='clip_jvmGC' width='46.5%' height='100%' x='0' y='0' preserveAspectRatio='xMinYMid' viewBox='0 0 270 160'/>" +
+                    "<svg id='svg_indicesSegments' clip_id='clip_indicesSegments' width='46.5%' height='100%' x='54%' y='0' preserveAspectRatio='xMinYMid' viewBox='0 0 270 160'/>" +
                 "</svg>" +
-                "<div width='46.5%' style='margin-left: 0%; float: left;'>" + jvmThreads + "</div>" +
-                "<div width='46.5%' style='margin-left: 54%;'>" + jvmGC + "</div>" +
+                "<div width='46.5%' style='margin-left: 0%; float: left;'>" + jvmGC + "</div>" +
+                "<div width='46.5%' style='margin-left: 54%;'>" + indicesSegments + "</div>" +
             "</div>"
         );
 
@@ -796,7 +793,7 @@ var SelectedClusterNodeView = Backbone.View.extend({
 
         // OS title
 
-        var osTitleP = this.make("p", {}, "<h2>OS & Process & HTTP & Transport</h2>");
+        var osTitleP = this.make("p", {}, "<h2>OS & JVM & Process & Transport</h2>");
         var osTitleCol = this.make("div", {"class":"twelvecol last"});
         var rowOsTitle = this.make("div", {"class":"row nodeDetail newSection"});
 
@@ -816,16 +813,16 @@ var SelectedClusterNodeView = Backbone.View.extend({
         $(osCol1).append(osp1);
 
         // OS row for charts
-        var osPercent = Mustache.render(templates.selectedClusterNode.osPercent, jsonModel);
+        var jvmThreads = Mustache.render(templates.selectedClusterNode.jvmThreads, jsonModel);
         var osMem = Mustache.render(templates.selectedClusterNode.osMem, jsonModel);
 
         var osCharts1 = this.make("p", {},
             "<div style='overflow: auto;'>" +
                 "<svg width='100%' height='160'>" +
-                    "<svg id='svg_osPercent' clip_id='clip_osPercent' width='46.5%' height='100%' x='0' y='0' preserveAspectRatio='xMinYMid' viewBox='0 0 270 160'/>" +
+                    "<svg id='svg_jvmThreads' clip_id='clip_jvmThreads' width='46.5%' height='100%' x='0' y='0' preserveAspectRatio='xMinYMid' viewBox='0 0 270 160'/>" +
                     "<svg id='svg_osMem' clip_id='clip_osMem' width='46.5%' height='100%' x='54%' y='0' preserveAspectRatio='xMinYMid' viewBox='0 0 270 160'/>" +
                 "</svg>" +
-                "<div width='46.5%' style='margin-left: 0%; float: left;'>" + osPercent + "</div>" +
+                "<div width='46.5%' style='margin-left: 0%; float: left;'>" + jvmThreads + "</div>" +
                 "<div width='46.5%' style='margin-left: 54%;'>" + osMem + "</div>" +
             "</div>"
         );
@@ -867,7 +864,7 @@ var SelectedClusterNodeView = Backbone.View.extend({
         $(indicesTitleCol).append(indicesTitleP);
 
         // Indices info row
-        var indicesInfo = Mustache.render(templates.selectedClusterNode.indicesTemplate, this.model.get("health").toJSON());
+        var indicesInfo = Mustache.render(templates.selectedClusterNode.indicesTemplate, {});
         var indicesInfoP = this.make("p", {}, indicesInfo);
 
         var indicesInfoCol = this.make("div", {"class":"twelvecol last"});
@@ -893,20 +890,20 @@ var SelectedClusterNodeView = Backbone.View.extend({
             "</div>"
         );
 
-        var indicesGetReqs = Mustache.render(templates.selectedClusterNode.indicesGetReqsTemplate, jsonModel);
-        var indicesGetTime = Mustache.render(templates.selectedClusterNode.indicesGetTimeTemplate, jsonModel);
+        var indicesIndexingReqs = Mustache.render(templates.selectedClusterNode.indicesIndexingReqsTemplate, jsonModel);
+        var indicesIndexingTime = Mustache.render(templates.selectedClusterNode.indicesIndexingTimeTemplate, jsonModel);
 
         var indicesCharts1p2 = this.make("p", {},
             "<div style='overflow: auto;'>" +
                 "<svg width='100%' height='160'>" +
-                    "<svg id='svg_indicesGetReqs' clip_id='clip_indicesGetReqs' width='46.5%' height='100%' x='0' y='0' preserveAspectRatio='xMinYMid' viewBox='0 0 270 160'/>" +
-                    "<svg id='svg_indicesGetTime' clip_id='clip_indicesGetTime' width='46.5%' height='100%' x='54%' y='0' preserveAspectRatio='xMinYMid' viewBox='0 0 270 160'/>" +
+                    "<svg id='svg_indicesIndexingReqs' clip_id='clip_indicesIndexingReqs' width='46.5%' height='100%' x='0' y='0' preserveAspectRatio='xMinYMid' viewBox='0 0 270 160'/>" +
+                    "<svg id='svg_indicesIndexingTime' clip_id='clip_indicesIndexingTime' width='46.5%' height='100%' x='54%' y='0' preserveAspectRatio='xMinYMid' viewBox='0 0 270 160'/>" +
                 "</svg>" +
-                "<div width='46.5%' style='margin-left: 0%; float: left;'>" + indicesGetReqs + "</div>" +
-                "<div width='46.5%' style='margin-left: 54%;'>" + indicesGetTime + "</div>" +
+                "<div width='46.5%' style='margin-left: 0%; float: left;'>" + indicesIndexingReqs + "</div>" +
+                "<div width='46.5%' style='margin-left: 54%;'>" + indicesIndexingTime + "</div>" +
             "</div>"
         );
-
+        
         var indicesCharts1Col1 = this.make("div", {"class":"sixcol"});
         var indicesCharts1Col2 = this.make("div", {"class":"sixcol last"});
 
@@ -931,17 +928,17 @@ var SelectedClusterNodeView = Backbone.View.extend({
             "</div>"
         );
 
-        var indicesIndexingReqs = Mustache.render(templates.selectedClusterNode.indicesIndexingReqsTemplate, jsonModel);
-        var indicesIndexingTime = Mustache.render(templates.selectedClusterNode.indicesIndexingTimeTemplate, jsonModel);
+        var indicesGetReqs = Mustache.render(templates.selectedClusterNode.indicesGetReqsTemplate, jsonModel);
+        var indicesGetTime = Mustache.render(templates.selectedClusterNode.indicesGetTimeTemplate, jsonModel);
 
         var indicesCharts2p2 = this.make("p", {},
             "<div style='overflow: auto;'>" +
                 "<svg width='100%' height='160'>" +
-                    "<svg id='svg_indicesIndexingReqs' clip_id='clip_indicesIndexingReqs' width='46.5%' height='100%' x='0' y='0' preserveAspectRatio='xMinYMid' viewBox='0 0 270 160'/>" +
-                    "<svg id='svg_indicesIndexingTime' clip_id='clip_indicesIndexingTime' width='46.5%' height='100%' x='54%' y='0' preserveAspectRatio='xMinYMid' viewBox='0 0 270 160'/>" +
+                    "<svg id='svg_indicesGetReqs' clip_id='clip_indicesGetReqs' width='46.5%' height='100%' x='0' y='0' preserveAspectRatio='xMinYMid' viewBox='0 0 270 160'/>" +
+                    "<svg id='svg_indicesGetTime' clip_id='clip_indicesGetTime' width='46.5%' height='100%' x='54%' y='0' preserveAspectRatio='xMinYMid' viewBox='0 0 270 160'/>" +
                 "</svg>" +
-                "<div width='46.5%' style='margin-left: 0%; float: left;'>" + indicesIndexingReqs + "</div>" +
-                "<div width='46.5%' style='margin-left: 54%;'>" + indicesIndexingTime + "</div>" +
+                "<div width='46.5%' style='margin-left: 0%; float: left;'>" + indicesGetReqs + "</div>" +
+                "<div width='46.5%' style='margin-left: 54%;'>" + indicesGetTime + "</div>" +
             "</div>"
         );
 
@@ -963,8 +960,6 @@ var SelectedClusterNodeView = Backbone.View.extend({
         $(fsTitleCol).append(fsTitleP);
 
         this.$el.parent().append(
-
-            rowSelectedNode,
 
             rowJvmTitle,
             rowJvmInfo,

@@ -26,12 +26,13 @@ var IndicesStatus = Backbone.Collection.extend({
     model: IndicesStatusTimestamp,
 
     url: function() {
-        return '/';
+        return '/_cluster/stats?pretty&human=true';
     },
 
     parse: function(data) {
         // add key
         data.id = new Date().getTime();
+        delete data.nodes;
         return data;
     },
 

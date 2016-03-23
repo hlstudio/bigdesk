@@ -26,7 +26,7 @@ var ClusterState = Backbone.Collection.extend({
     model: ClusterStateTimestamp,
 
     url: function() {
-        return '/_cluster/state/nodes,routing_table?human=true';
+        return '/_cluster/state/nodes,routing_table,routing_nodes?human=true';
     },
 
     parse: function(data) {

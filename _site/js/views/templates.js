@@ -63,23 +63,9 @@ var templates = {
 
     selectedClusterNode : {
 
-        selectedNodeInfoTemplate: [
-            "<h2>Selected node:</h2>" +
-            "Elasticsearch version: {{version}}"+
-            "&nbsp;&nbsp;&nbsp;Host name: {{host}}"+ 
-            "&nbsp;&nbsp;&nbsp;IP: {{ip}}"+ 
-            "&nbsp;&nbsp;&nbsp;OS name: {{os.name}}"+
-            "&nbsp;&nbsp;&nbsp;Node id: <code>{{nodeId}}</code>"
-        ].join("<br>"),
-
         jvmHeapMem: [
             "<div>Committed: <span id='jvm_heap_mem_committed'>n/a</span></div>",
             "<div>Used: <span id='jvm_heap_mem_used'>n/a</span></div>"
-        ].join(""),
-
-        jvmNonHeapMem: [
-            "<div>Committed: <span id='jvm_non_heap_mem_committed'>n/a</span></div>",
-            "<div>Used: <span id='jvm_non_heap_mem_used'>n/a</span></div>"
         ].join(""),
 
         jvmThreads: [
@@ -144,31 +130,37 @@ var templates = {
             "</svg>"
         ].join(""),
 
-        jvmInfoTemplate1: [
-            "VM name: {{vm_name}}"+
-            "&nbsp;&nbsp;&nbsp;VM vendor: {{vm_vendor}}"+
-            "&nbsp;&nbsp;&nbsp;Java version: {{version}}"+
-            "&nbsp;&nbsp;&nbsp;PID: {{pid}}"+
-            "&nbsp;&nbsp;&nbsp;Uptime: <span id='jvm_uptime'>n/a</span>"
+        summaryInfoTemplate: [
+            "Elasticsearch version: {{version}}"+
+            "&nbsp;&nbsp;&nbsp;Host name: {{host}}"+ 
+            "&nbsp;&nbsp;&nbsp;OS name: {{os.name}}"+
+            "&nbsp;&nbsp;&nbsp;Java version: {{jvm.version}}"+
+            "&nbsp;&nbsp;&nbsp;VM PID: {{jvm.pid}}"+
+            "&nbsp;&nbsp;&nbsp;VM Uptime: <span id='jvm_uptime'>n/a</span>"
         ].join("<br>"),
 
         osInfoTemplate: [
             "OS Arch: {{os.arch}}"+
             "&nbsp;&nbsp;&nbsp;Available processors: {{os.available_processors}}"+
             "&nbsp;&nbsp;&nbsp;Load average: <span id='load_average'>n/a</span>"+
-            "&nbsp;&nbsp;&nbsp;File descriptors: <span id='file_descriptors'>n/a</span>"
+            "&nbsp;&nbsp;&nbsp;File descriptors: <span id='file_descriptors'>n/a</span>",
+            "VM name: {{jvm.vm_name}}"+
+            "&nbsp;&nbsp;&nbsp;VM vendor: {{jvm.vm_vendor}}"
         ].join("<br>"),
 
         indicesTemplate: [
-       		"Size: <span id='indices_store_size'>n/a</span>"+
+       		"Store size: <span id='indices_store_size'>n/a</span>"+
             "&nbsp;&nbsp;&nbsp;Docs count: <span id='indices_docs_count'>n/a</span>"+
             "&nbsp;&nbsp;&nbsp;Docs deleted: <span id='indices_docs_deleted'>n/a</span>"+
-            "&nbsp;&nbsp;&nbsp;Active shard count: {{active_shards}}"+
-            "&nbsp;&nbsp;&nbsp;Segments count: <span id='indices_segments_count'>n/a</span>"+
             "&nbsp;&nbsp;&nbsp;Flush: <span id='indices_flush_total'>n/a</span>"+
             "&nbsp;&nbsp;&nbsp;Refresh: <span id='indices_refresh_total'>n/a</span>"
         ].join("<br>"),
-
+        
+        indicesSegments: [
+        	"Shards count: <span id='shards_count'>n/a</span>",
+            "Segments count: <span id='indices_segments_count'>n/a</span>"
+        ].join("<br>"),
+        
         indicesSearchReqsTemplate: [
             "Query: <span id='indices_search_query_reqs'>n/a</span>",
             "Fetch: <span id='indices_search_fetch_reqs'>n/a</span>"
