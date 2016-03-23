@@ -12,7 +12,11 @@ Live charts and statistics for Elasticsearch 2.x cluster.
 
 Install Elasticsearch then navigate to `<ES_HOME>` and execute the following command on command line:
 
-    $ ./bin/plugin -install hlstudio/bigdesk
+    $ ./bin/plugin install hlstudio/bigdesk
+
+Install a special/previous version eg: v2.2.a
+
+    $ ./bin/plugin install hlstudio/bigdesk/v2.2.a
 
 ## How to use Bigdesk
 
