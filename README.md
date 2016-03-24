@@ -20,7 +20,7 @@ Online Install a special/previous version eg: v2.2.a
 
     $ ./bin/plugin install hlstudio/bigdesk/v2.2.a
 
-Offline Install, download release files or master file, copy to a directory eg:/tmp
+Offline Install, download release zip file or master zip file, copy to a directory eg:/tmp
 
     $ ./bin/plugin install file:/tmp/bigdesk-master.zip
 
