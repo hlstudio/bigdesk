@@ -10,13 +10,19 @@ Live charts and statistics for Elasticsearch 2.x cluster.
 
 ## Installation Instructions
 
-Install Elasticsearch then navigate to `<ES_HOME>` and execute the following command on command line:
+navigate to `<ES_HOME>` and execute the following command on command line
+
+Online Install Elasticsearch master
 
     $ ./bin/plugin install hlstudio/bigdesk
 
-Install a special/previous version eg: v2.2.a
+Online Install a special/previous version eg: v2.2.a
 
     $ ./bin/plugin install hlstudio/bigdesk/v2.2.a
+
+Offline Install, download release files or master file, copy to a directory eg:/tmp
+
+    $ ./bin/plugin install file:/tmp/bigdesk-master.zip
 
 ## How to use Bigdesk
 
