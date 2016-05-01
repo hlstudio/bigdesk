@@ -583,37 +583,38 @@ var SelectedClusterNodeView = Backbone.View.extend({
                     // Transport: Tx Rx
 
                     _.defer(function(){
+						if (stats_the_latest && stats_the_latest.node && stats_the_latest.node.transport) {
+	                        var calcType = $("#transport_avg_calc_type").find(":selected").val();
 
-                        var calcType = $("#transport_avg_calc_type").find(":selected").val();
+	                        var transport_tx_delta = bigdesk_charts.transport_txrx.series1(stats);
+	                        var transport_rx_delta = bigdesk_charts.transport_txrx.series2(stats);
 
-                        var transport_tx_delta = bigdesk_charts.transport_txrx.series1(stats);
-                        var transport_rx_delta = bigdesk_charts.transport_txrx.series2(stats);
+	                        if (transport_tx_delta.length > 1 && transport_rx_delta.length > 1) {
 
-                        if (transport_tx_delta.length > 1 && transport_rx_delta.length > 1) {
+	                            if (calcType == "weighted") {
+	                                normalizedDeltaToSeconds(transport_tx_delta);
+	                                normalizedDeltaToSeconds(transport_rx_delta);
+	                            } else {
+	                                delta(transport_tx_delta);
+	                                delta(transport_rx_delta);
+	                            }
 
-                            if (calcType == "weighted") {
-                                normalizedDeltaToSeconds(transport_tx_delta);
-                                normalizedDeltaToSeconds(transport_rx_delta);
-                            } else {
-                                delta(transport_tx_delta);
-                                delta(transport_rx_delta);
-                            }
-
-                            try { chart_transport_txrx.animate(animatedCharts).update(transport_tx_delta, transport_rx_delta); } catch (ignore) {}
-                        }
-                        var _t = stats_the_latest.node.transport;
-                        if (_t && _t.rx_size && _t.tx_size && _t.rx_count != undefined && _t.tx_count != undefined) {
-                            $("#transport_rx_size").text(stats_the_latest.node.transport.rx_size);
-                            $("#transport_tx_size").text(stats_the_latest.node.transport.tx_size);
-                            $("#transport_rx_count").text(stats_the_latest.node.transport.rx_count);
-                            $("#transport_tx_count").text(stats_the_latest.node.transport.tx_count);
-                        } else {
-                            chart_transport_txrx = bigdesk_charts.not_available.chart(chart_transport_txrx.svg());
-                            $("#transport_rx_size").text("n/a");
-                            $("#transport_tx_size").text("n/a");
-                            $("#transport_rx_count").text("n/a");
-                            $("#transport_tx_count").text("n/a");
-                        }
+	                            try { chart_transport_txrx.animate(animatedCharts).update(transport_tx_delta, transport_rx_delta); } catch (ignore) {}
+	                        }
+	                        var _t = stats_the_latest.node.transport;
+	                        if (_t && _t.rx_size && _t.tx_size && _t.rx_count != undefined && _t.tx_count != undefined) {
+	                            $("#transport_rx_size").text(stats_the_latest.node.transport.rx_size);
+	                            $("#transport_tx_size").text(stats_the_latest.node.transport.tx_size);
+	                            $("#transport_rx_count").text(stats_the_latest.node.transport.rx_count);
+	                            $("#transport_tx_count").text(stats_the_latest.node.transport.tx_count);
+	                        } else {
+	                            chart_transport_txrx = bigdesk_charts.not_available.chart(chart_transport_txrx.svg());
+	                            $("#transport_rx_size").text("n/a");
+	                            $("#transport_tx_size").text("n/a");
+	                            $("#transport_rx_count").text("n/a");
+	                            $("#transport_tx_count").text("n/a");
+	                        }
+	                    }
                     });
 
                     // --------------------------------------------
