@@ -3,12 +3,20 @@
 Live charts and statistics for Elasticsearch 2.x cluster.
 ## 2016-10-30
 - How to use for ES5.x
+
   site plugins are not supported. Run bigdesk standalone
+  
   modify elasticsearch.yml,enable CORS
+  
 	http.cors.enabled: true
+	
 	http.cors.allow-origin: "*"
+	
    Check Elasticsearch documentation on this parameter: `https://www.elastic.co/guide/en/elasticsearch/reference/current/modules-http.html#modules-http`
-   then open index.html£¬or run on another web server
+   
+   then open index.html in browser
+   
+   or run on another web server
 
 ## 2016-03-23
 - Modify and relayout some metrics and charts
