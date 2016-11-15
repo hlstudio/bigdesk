@@ -73,7 +73,7 @@
     <link rel="icon" href="images/favicon.png" type="image/png">
 </head>
 
-<body>
+<body onload="checkServer();">
 <div class="container">
     <form>
     <div class="row connectionPanel">
@@ -119,5 +119,14 @@
     </form>
     <div id="selectedViewDetail"></div>
 </div>
+<script>
+function checkServer(){	
+	if(location.hostname != ""){
+		if($("#restEndPoint").val() == "http://localhost:9200"){
+			$("#restEndPoint").val(location.protocol+"//"+location.host);
+		}
+	}
+}
+</script>
 </body>
 </html>
