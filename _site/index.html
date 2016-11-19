@@ -123,7 +123,7 @@
 function checkServer(){	
 	if(location.hostname != ""){
 		if($("#restEndPoint").val() == "http://localhost:9200"){
-			$("#restEndPoint").val(location.protocol+"//"+location.host);
+			$("#restEndPoint").val(location.protocol+"//"+location.hostname+":9200");
 		}
 	}
 }
