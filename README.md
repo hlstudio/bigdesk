@@ -1,6 +1,25 @@
 # Bigdesk
 
-Live charts and statistics for Elasticsearch 2.x /5.x cluster.
+Live charts and statistics for Elasticsearch 2.x/5.x/7.x+ cluster.
+## 2020-03-25
+- Test on Elasticsearch 7.6.1
+
+- Running as a Chrome extension
+
+	download crx/es-bigdesk.crx , check extentions develop mode on , drag to webbrowser 
+
+	if cannot installed , enable installing local CRX files , or unzip es-bigdesk.crx then install from local folder  
+	
+	Click the extension icon in the toolbar of your web browser.
+	
+	Note that you don¡¯t need to enable CORS with this method.
+
+	Test on Chrome 75.x and Opera 67
+
+- Run bigdesk standalone
+
+  site plugins are not supported. Run bigdesk standalone ,see below
+  
 ## 2016-10-30
 - How to use for ES5.x
 

@@ -78,8 +78,8 @@ var SelectedClusterNodeView = Backbone.View.extend({
                 var chart_jvmGC = bigdesk_charts.jvmGC.chart(d3.select("#svg_jvmGC"));
 
 				var chart_threadpoolSearch = bigdesk_charts.threadpoolSearch.chart(d3.select("#svg_threadpoolSearch"));
-				var chart_threadpoolIndex = bigdesk_charts.threadpoolIndex.chart(d3.select("#svg_threadpoolIndex"));
-				var chart_threadpoolBulk = bigdesk_charts.threadpoolBulk.chart(d3.select("#svg_threadpoolBulk"));
+				var chart_threadpoolGet = bigdesk_charts.threadpoolGet.chart(d3.select("#svg_threadpoolGet"));
+				var chart_threadpoolWrite = bigdesk_charts.threadpoolWrite.chart(d3.select("#svg_threadpoolWrite"));
 				var chart_threadpoolRefresh = bigdesk_charts.threadpoolRefresh.chart(d3.select("#svg_threadpoolRefresh"));
 
                 var chart_channels = bigdesk_charts.channels.chart(d3.select("#svg_channels"));
@@ -254,19 +254,19 @@ var SelectedClusterNodeView = Backbone.View.extend({
                     });
 
 					// --------------------------------------------
-					// Threadpool Index
+					// Threadpool Get
 
                     _.defer(function(){
-                        var threadpool_index_count = bigdesk_charts.threadpoolIndex.series1(stats);
-                        var threadpool_index_peak = bigdesk_charts.threadpoolIndex.series2(stats);
-                        var threadpool_index_queue = bigdesk_charts.threadpoolIndex.series3(stats);
+                        var threadpool_index_count = bigdesk_charts.threadpoolGet.series1(stats);
+                        var threadpool_index_peak = bigdesk_charts.threadpoolGet.series2(stats);
+                        var threadpool_index_queue = bigdesk_charts.threadpoolGet.series3(stats);
 
-                        try { chart_threadpoolIndex.animate(animatedCharts).update(threadpool_index_count, threadpool_index_peak, threadpool_index_queue); } catch (ignore) {}
+                        try { chart_threadpoolGet.animate(animatedCharts).update(threadpool_index_count, threadpool_index_peak, threadpool_index_queue); } catch (ignore) {}
 
                         if (stats_the_latest && stats_the_latest.node) {
-                            $("#tp_index_count").text(stats_the_latest.node.thread_pool.index.active);
-                            $("#tp_index_peak").text(stats_the_latest.node.thread_pool.index.largest);
-                            $("#tp_index_queue").text(stats_the_latest.node.thread_pool.index.queue);
+                            $("#tp_index_count").text(stats_the_latest.node.thread_pool.get.active);
+                            $("#tp_index_peak").text(stats_the_latest.node.thread_pool.get.largest);
+                            $("#tp_index_queue").text(stats_the_latest.node.thread_pool.get.queue);
                         } else {
                             $("#tp_index_count").text("n/a");
                             $("#tp_index_peak").text("n/a");
@@ -275,19 +275,19 @@ var SelectedClusterNodeView = Backbone.View.extend({
                     });
 
 					// --------------------------------------------
-					// Threadpool Bulk
+					// Threadpool Write
 
                     _.defer(function(){
-                        var threadpool_bulk_count = bigdesk_charts.threadpoolBulk.series1(stats);
-                        var threadpool_bulk_peak = bigdesk_charts.threadpoolBulk.series2(stats);
-                        var threadpool_bulk_queue = bigdesk_charts.threadpoolBulk.series3(stats);
+                        var threadpool_bulk_count = bigdesk_charts.threadpoolWrite.series1(stats);
+                        var threadpool_bulk_peak = bigdesk_charts.threadpoolWrite.series2(stats);
+                        var threadpool_bulk_queue = bigdesk_charts.threadpoolWrite.series3(stats);
 
-                        try { chart_threadpoolBulk.animate(animatedCharts).update(threadpool_bulk_count, threadpool_bulk_peak, threadpool_bulk_queue); } catch (ignore) {}
+                        try { chart_threadpoolWrite.animate(animatedCharts).update(threadpool_bulk_count, threadpool_bulk_peak, threadpool_bulk_queue); } catch (ignore) {}
 
                         if (stats_the_latest && stats_the_latest.node) {
-                            $("#tp_bulk_count").text(stats_the_latest.node.thread_pool.bulk.active);
-                            $("#tp_bulk_peak").text(stats_the_latest.node.thread_pool.bulk.largest);
-                            $("#tp_bulk_queue").text(stats_the_latest.node.thread_pool.bulk.queue);
+                            $("#tp_bulk_count").text(stats_the_latest.node.thread_pool.write.active);
+                            $("#tp_bulk_peak").text(stats_the_latest.node.thread_pool.write.largest);
+                            $("#tp_bulk_queue").text(stats_the_latest.node.thread_pool.write.queue);
                         } else {
                             $("#tp_bulk_count").text("n/a");
                             $("#tp_bulk_peak").text("n/a");
@@ -489,7 +489,7 @@ var SelectedClusterNodeView = Backbone.View.extend({
 
                             try { chart_indicesGetTime.animate(animatedCharts).update(indices_get_time, indices_missing_time, indices_exists_time); } catch (ignore) {}
 
-                            $("#indices_get_time").text(stats_the_latest.node.indices.get.get_time);
+                            $("#indices_get_time").text(stats_the_latest.node.indices.get.getTime);
                             $("#indices_exists_time").text(stats_the_latest.node.indices.get.exists_time);
                             $("#indices_missing_time").text(stats_the_latest.node.indices.get.missing_time);
                         }
@@ -756,26 +756,26 @@ var SelectedClusterNodeView = Backbone.View.extend({
 		// Threadpool row for charts
 
         var tpSearch = Mustache.render(templates.selectedClusterNode.threadPoolSearch, jsonModel);
-        var tpIndex = Mustache.render(templates.selectedClusterNode.threadPoolIndex, jsonModel);
+        var tpIndex = Mustache.render(templates.selectedClusterNode.threadPoolGet, jsonModel);
 
         var tppCharts1 = this.make("p", {},
             "<div style='overflow: auto;'>" +
                 "<svg width='100%' height='160'>" +
                     "<svg id='svg_threadpoolSearch' clip_id='clip_threadpoolSearch' width='46.5%' height='100%' x='0' y='0' preserveAspectRatio='xMinYMid' viewBox='0 0 270 160'/>" +
-                    "<svg id='svg_threadpoolIndex' clip_id='clip_threadpoolIndex' width='46.5%' height='100%' x='54%' y='0' preserveAspectRatio='xMinYMid' viewBox='0 0 270 160'/>" +
+                    "<svg id='svg_threadpoolGet' clip_id='clip_threadpoolGet' width='46.5%' height='100%' x='54%' y='0' preserveAspectRatio='xMinYMid' viewBox='0 0 270 160'/>" +
                 "</svg>" +
                 "<div width='46.5%' style='margin-left: 0%; float: left;'>" + tpSearch + "</div>" +
                 "<div width='46.5%' style='margin-left: 54%;'>" + tpIndex + "</div>" +
             "</div>"
         );
 
-		var tpBulk = Mustache.render(templates.selectedClusterNode.threadPoolBulk, jsonModel);
+		var tpBulk = Mustache.render(templates.selectedClusterNode.threadPoolWrite, jsonModel);
         var tpRefresh = Mustache.render(templates.selectedClusterNode.threadPoolRefresh, jsonModel);
 
         var tppCharts2 = this.make("p", {},
             "<div style='overflow: auto;'>" +
                 "<svg width='100%' height='160'>" +
-                    "<svg id='svg_threadpoolBulk' clip_id='clip_threadpoolBulk' width='46.5%' height='100%' x='0' y='0' preserveAspectRatio='xMinYMid' viewBox='0 0 270 160'/>" +
+                    "<svg id='svg_threadpoolWrite' clip_id='clip_threadpoolWrite' width='46.5%' height='100%' x='0' y='0' preserveAspectRatio='xMinYMid' viewBox='0 0 270 160'/>" +
                     "<svg id='svg_threadpoolRefresh' clip_id='clip_threadpoolRefresh' width='46.5%' height='100%' x='54%' y='0' preserveAspectRatio='xMinYMid' viewBox='0 0 270 160'/>" +
                 "</svg>" +
                 "<div width='46.5%' style='margin-left: 0%; float: left;'>" + tpBulk + "</div>" +

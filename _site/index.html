@@ -80,7 +80,7 @@
         <div class="sixcol">
             <span class="connectionPanelSectionWithoutDecoration">
                 ES node REST endpoint
-                <input id="restEndPoint" type="text" size="40" value="http://localhost:9200" />
+                <input id="restEndPoint" type="text" size="40" value="http://localhost:4200" />
             </span>
         </div>
         <div class="sixcol last">
@@ -88,8 +88,8 @@
             Refresh every
             <select id="refreshInterval">
                 <option value="1000" label="1 sec">1 sec</option>
-                <option value="2000" label="2 sec" selected="selected">2 sec</option>
-                <option value="3000" label="3 sec">3 sec</option>
+                <option value="2000" label="2 sec">2 sec</option>
+                <option value="3000" label="3 sec" selected="selected">3 sec</option>
                 <option value="5000" label="5 sec">5 sec</option>
                 <option value="10000" label="10 sec">10 sec</option>
                 <option value="30000" label="30 sec">30 sec</option>
@@ -122,8 +122,8 @@
 <script>
 function checkServer(){	
 	if(location.hostname != ""){
-		if($("#restEndPoint").val() == "http://localhost:9200"){
-			$("#restEndPoint").val(location.protocol+"//"+location.hostname+":9200");
+		if($("#restEndPoint").val() == "http://localhost:4200"){
+			$("#restEndPoint").val(location.protocol+"//"+location.hostname+":4200");
 		}
 	}
 }

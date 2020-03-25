@@ -86,7 +86,8 @@ var selectedView = undefined;
 var selectedClusterName = undefined;
 
 var connectTo = function(url, refreshInterval, storeSize, dispatcher, selectedView, callback) {
-
+	//fix 20200324
+	if( url.endsWith('/')){url=url.substring(0,url.length-1);}
     var connectionConfig = { baseUrl: url };
     var clusterHealth = new ClusterHealth({},connectionConfig);
 
@@ -217,7 +218,6 @@ $(document).ready(
             storeSize = $("#storeSize"),
             button = $("#connectButton"),
             ajaxIndicator = $("#ajaxIndicator");
-
         var isConnected = function() {
             return (button.val() !== "Connect");
         };
@@ -303,7 +303,7 @@ $(document).ready(
         var parseUrlParams = function() {
             return {
                 endpoint: getSearchUrlVar("endpoint") || "http://localhost:9200",
-                refresh: getSearchUrlVar("refresh") || 2000,
+                refresh: getSearchUrlVar("refresh") || 3000,
                 history: getSearchUrlVar("history") || 300000,
                 connect: getSearchUrlVar("connect") || false
             }

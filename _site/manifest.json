@@ -1,0 +1,24 @@
+{  
+    "manifest_version": 2,
+    "name": "es-bigdesk",  
+    "version": "7.6.1",
+    "background": { 
+      "scripts": ["background.js"],
+      "persistent": false
+    },
+    "icons": {
+      "32": "images/favicon.png"
+    },
+    "content_security_policy": "script-src 'self' 'sha256-Rpn+rjJuXCjZBPOPhhVloRXuzAUBRnAas+6gKVDohs0=' 'unsafe-eval'; object-src 'self';",
+    "description": "Chrome Extension containing the excellent ElasticSearch Bigdesk application.",  
+    "browser_action": {  
+      "default_icon": "images/favicon.png" ,
+      "default_title": "es-bigdesk"
+    },
+    "content_scripts":[{
+        "all_frames": true,
+        "matches":["*://*/"],
+        "js":["background.js"],
+        "run_at": "document_end"
+    }]
+} 

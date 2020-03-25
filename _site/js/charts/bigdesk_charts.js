@@ -220,12 +220,12 @@ bigdesk_charts.threadpoolSearch = {
 
 }
 
-bigdesk_charts.threadpoolIndex = {
+bigdesk_charts.threadpoolGet = {
 	chart: function(element) {
         return timeSeriesChart()
             .width(bigdesk_charts.default.width).height(bigdesk_charts.default.height)
             .legend({
-                caption: "Index",
+                caption: "Get",
                 series1: "Count",
                 series2: "Peak",
                 series3: "Queue",
@@ -239,7 +239,7 @@ bigdesk_charts.threadpoolIndex = {
          return stats.map(function(snapshot){
             return {
                 timestamp: +snapshot.node.timestamp,
-                value: +snapshot.node.thread_pool.index.active
+                value: +snapshot.node.thread_pool.get.active
             }
         })
     },
@@ -248,7 +248,7 @@ bigdesk_charts.threadpoolIndex = {
          return stats.map(function(snapshot){
             return {
                 timestamp: +snapshot.node.timestamp,
-                value: +snapshot.node.thread_pool.index.largest
+                value: +snapshot.node.thread_pool.get.largest
             }
         })
     },
@@ -257,19 +257,19 @@ bigdesk_charts.threadpoolIndex = {
          return stats.map(function(snapshot){
             return {
                 timestamp: +snapshot.node.timestamp,
-                value: +snapshot.node.thread_pool.index.queue
+                value: +snapshot.node.thread_pool.get.queue
             }
         })
     }
 
 }
 
-bigdesk_charts.threadpoolBulk = {
+bigdesk_charts.threadpoolWrite = {
 	chart: function(element) {
         return timeSeriesChart()
             .width(bigdesk_charts.default.width).height(bigdesk_charts.default.height)
             .legend({
-                caption: "Bulk",
+                caption: "Write",
                 series1: "Count",
                 series2: "Peak",
                 series3: "Queue",
@@ -283,7 +283,7 @@ bigdesk_charts.threadpoolBulk = {
          return stats.map(function(snapshot){
             return {
                 timestamp: +snapshot.node.timestamp,
-                value: +snapshot.node.thread_pool.bulk.active
+                value: +snapshot.node.thread_pool.write.active
             }
         })
     },
@@ -292,7 +292,7 @@ bigdesk_charts.threadpoolBulk = {
          return stats.map(function(snapshot){
             return {
                 timestamp: +snapshot.node.timestamp,
-                value: +snapshot.node.thread_pool.bulk.largest
+                value: +snapshot.node.thread_pool.write.largest
             }
         })
     },
@@ -301,7 +301,7 @@ bigdesk_charts.threadpoolBulk = {
          return stats.map(function(snapshot){
             return {
                 timestamp: +snapshot.node.timestamp,
-                value: +snapshot.node.thread_pool.bulk.queue
+                value: +snapshot.node.thread_pool.write.queue
             }
         })
     }

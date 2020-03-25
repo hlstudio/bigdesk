@@ -78,29 +78,29 @@ var templates = {
             "<div>Total count (O/Y): <span id='jvm_gc_count'>n/a</span></div>"
         ].join(""),
 
-		threadPoolSearch: [
+        threadPoolSearch: [
             "<div>Queue: <span id='tp_search_queue'>n/a</span></div>",
-			"<div>Peak: <span id='tp_search_peak'>n/a</span></div>",
+            "<div>Peak: <span id='tp_search_peak'>n/a</span></div>",
             "<div>Count: <span id='tp_search_count'>n/a</span></div>"
-		].join(""),
+        ].join(""),
 
-		threadPoolIndex: [
+        threadPoolGet: [
             "<div>Queue: <span id='tp_index_queue'>n/a</span></div>",
-			"<div>Peak: <span id='tp_index_peak'>n/a</span></div>",
+            "<div>Peak: <span id='tp_index_peak'>n/a</span></div>",
             "<div>Count: <span id='tp_index_count'>n/a</span></div>"
-		].join(""),
+        ].join(""),
 
-		threadPoolBulk: [
+        threadPoolWrite: [
             "<div>Queue: <span id='tp_bulk_queue'>n/a</span></div>",
-			"<div>Peak: <span id='tp_bulk_peak'>n/a</span></div>",
+            "<div>Peak: <span id='tp_bulk_peak'>n/a</span></div>",
             "<div>Count: <span id='tp_bulk_count'>n/a</span></div>"
-		].join(""),
+        ].join(""),
 
-		threadPoolRefresh: [
+        threadPoolRefresh: [
             "<div>Queue: <span id='tp_refresh_queue'>n/a</span></div>",
-			"<div>Peak: <span id='tp_refresh_peak'>n/a</span></div>",
+            "<div>Peak: <span id='tp_refresh_peak'>n/a</span></div>",
             "<div>Count: <span id='tp_refresh_count'>n/a</span></div>"
-		].join(""),
+        ].join(""),
 
         osMem: [
             "<div>Free: <span id='os_mem_free'>n/a</span></div>",
@@ -149,7 +149,7 @@ var templates = {
         ].join("<br>"),
 
         indicesTemplate: [
-       		"Store size: <span id='indices_store_size'>n/a</span>"+
+               "Store size: <span id='indices_store_size'>n/a</span>"+
             "&nbsp;&nbsp;&nbsp;Docs count: <span id='indices_docs_count'>n/a</span>"+
             "&nbsp;&nbsp;&nbsp;Docs deleted: <span id='indices_docs_deleted'>n/a</span>"+
             "&nbsp;&nbsp;&nbsp;Flush: <span id='indices_flush_total'>n/a</span>"+
@@ -157,7 +157,7 @@ var templates = {
         ].join("<br>"),
         
         indicesSegments: [
-        	"Shards count: <span id='shards_count'>n/a</span>",
+            "Shards count: <span id='shards_count'>n/a</span>",
             "Segments count: <span id='indices_segments_count'>n/a</span>"
         ].join("<br>"),
         
