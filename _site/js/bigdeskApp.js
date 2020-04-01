@@ -278,6 +278,7 @@ $(document).ready(
                 disconnectFrom(restEndPoint.val(), switchButtonText);
             } else {
                 connectTo(restEndPoint.val(), getRefreshInterval(), getStoreSize(), bigdeskEventDispatcher, selectedView, switchButtonText);
+                window.localStorage.setItem("endpoint",restEndPoint.val());
             }
         });
 
@@ -299,10 +300,13 @@ $(document).ready(
             var result = new RegExp(key + "=([^&]*)", "i").exec(window.location.search);
             return decodeURIComponent(result && result[1] || "");
         };
+        var getLocalUrlVar = function(key) {
+	        return window.localStorage.getItem(key);
+        };
 
         var parseUrlParams = function() {
             return {
-                endpoint: getSearchUrlVar("endpoint") || "http://localhost:9200",
+                endpoint: getSearchUrlVar("endpoint") || getLocalUrlVar("endpoint") || "http://localhost:9200",
                 refresh: getSearchUrlVar("refresh") || 3000,
                 history: getSearchUrlVar("history") || 300000,
                 connect: getSearchUrlVar("connect") || false
