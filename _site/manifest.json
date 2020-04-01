@@ -9,7 +9,7 @@
     "icons": {
       "32": "images/favicon.png"
     },
-    "content_security_policy": "script-src 'self' 'sha256-Rpn+rjJuXCjZBPOPhhVloRXuzAUBRnAas+6gKVDohs0=' 'unsafe-eval'; object-src 'self';",
+    "content_security_policy": "script-src 'self' 'sha256-jr1qgT9bTfndm6DSnq/ldWX5MIBsxL1uOynL0n+QZ60=' 'unsafe-eval'; object-src 'self';",
     "description": "Chrome Extension containing the excellent ElasticSearch Bigdesk application.",  
     "browser_action": {  
       "default_icon": "images/favicon.png" ,
