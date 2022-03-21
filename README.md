@@ -1,6 +1,6 @@
 # Bigdesk
 
-Live charts and statistics for Elasticsearch 2.x/5.x/7.x+ cluster.
+Live charts and statistics for Elasticsearch 2.x/5.x/7.x/8.x+ cluster.
 ## 2022-03-21
 - Test on Elasticsearch 8.0.0
 
