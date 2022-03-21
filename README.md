@@ -1,6 +1,9 @@
 # Bigdesk
 
 Live charts and statistics for Elasticsearch 2.x/5.x/7.x+ cluster.
+## 2022-03-21
+- Test on Elasticsearch 8.0.0
+
 ## 2020-03-25
 - Test on Elasticsearch 7.6.1
 
@@ -12,7 +15,7 @@ Live charts and statistics for Elasticsearch 2.x/5.x/7.x+ cluster.
 	
 	Click the extension icon in the toolbar of your web browser.
 	
-	Note that you don¡¯t need to enable CORS with this method.
+	Note that you donÂ¡Â¯t need to enable CORS with this method.
 
 	Test on Chrome 75.x and Opera 67
 
